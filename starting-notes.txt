@@ -1,0 +1,13 @@
+Radius Principle
+
+- Radius Principle, a set of principles, skills and tools to make clean agentic coding changes. Easily reveiwaable, predictable, and controlled.
+- The main point of Radius Principle is to formalize your expectation before an agent do the change, this formalization now is in its v1 with the expect.yml format (we can find some older blast.yml files in the Lumpcode repo on this machine)
+- by formalizing the expectation before the change, it enables : 
+-- human comprehension : the human has a full picture of what will come, and can review if a change seems to big and must be splitted before letting the agent start
+-- easier review : a deterministic script can check how much the implementation drifted from what was expected, and can then help the reviewer focus on the biggest drifts
+-- agent guidance : the expectation can be used to guide the agent
+-- conflicts anticipation : two agents have two tasks, two expects, if there is a a file in common between the two expects, we can do the changes sequentially to avoid conflicts
+- Radius Principle should for now provide 3 skills :
+-- /radius:expect, help to create an expect.yml from a requirements or a conversation
+-- /radius:impl, implement the change to match that expect
+-- /radius:drift, measure drift from the expect, explain it

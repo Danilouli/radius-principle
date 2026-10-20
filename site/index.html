@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Radius Principle — review the change before it exists</title>
+    <meta
+      name="description"
+      content="One principle for reviewable agentic changes. Write a non-prose expectation first. That file is expect.yml."
+    />
+    <link rel="icon" href="./logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <div class="wrap">
+      <header class="site-header">
+        <a class="brand" href="#top">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="28" height="28" aria-hidden="true">
+            <circle cx="32" cy="32" r="22" fill="none" stroke="currentColor" stroke-width="2.5"/>
+            <circle cx="32" cy="32" r="2.75" fill="currentColor"/>
+            <path d="M32 32h22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+          <span class="wordmark">Radius Principle</span>
+        </a>
+        <nav aria-label="On this page">
+          <a href="#expect">expect.yml</a>
+          <a href="#loop">Loop</a>
+          <a href="#install">Install</a>
+        </nav>
+      </header>
+
+      <main id="main">
+        <section class="hero" id="top">
+          <h1>Review the change before it exists.</h1>
+          <p class="lede">
+            Agent PRs are hard to review because the review is late. Extra files.
+            A helper that grew. A rename you did not ask for. Radius Principle
+            is a small practice: write a non-prose expectation first. That file
+            is <code>expect.yml</code>.
+          </p>
+        </section>
+
+        <section>
+          <h2>The review you can still change</h2>
+          <p>
+            An agent PR already on the branch asks you to reconstruct intent from
+            a finished diff. A big agent PR is what you get when nobody reviewed
+            a small slice. So you review the change before any code exists.
+          </p>
+          <p>
+            A paragraph can be true and still leave the slice unbounded. A file
+            map cannot hide that. You see the whole slice. If it is already too
+            big, you split it. Then the agent implements against a contract you
+            already accepted.
+          </p>
+        </section>
+
+        <section id="expect">
+          <h2>expect.yml</h2>
+          <p>
+            Radius Principle is the practice. <code>expect.yml</code> is the artifact:
+            which files move, a line of why, optional size, optional symbols you
+            already know must change.
+          </p>
+          <pre><code>desc: "Extract acquireLock so setup and teardown share one release callback."
+files:
+  src/lock.ts:
+    desc: "New helper: acquire and release the path lock."
+    "-": 0
+    "+": 40
+    symbols:
+      acquireLock: create
+      releaseLock: create
+  src/run.ts:
+    desc: "Call acquireLock. Drop the inlined lock block."
+    "-": 12
+    "+": 8
+    symbols:
+      run: update</code></pre>
+          <p class="note">
+            <code>desc</code> is for humans. <code>files</code> is the expect.
+            <code>+</code> / <code>-</code> are expected size, not a pass or fail.
+            <code>symbols</code> are not exhaustive: create, update, or delete
+            for names you already care about.
+          </p>
+        </section>
+
+        <section>
+          <h2>If the expect is already big, split it</h2>
+          <p>
+            The file list has to fit in your head. If it does not, the PR will
+            not either. Split until each expect is one reviewable slice. Those
+            PRs stay small, precise, easy to review, and easy to combine.
+          </p>
+          <p>
+            You still read the file before implementation. If the first time you
+            see it is inside the impl PR, you are late.
+          </p>
+        </section>
+
+        <section id="loop">
+          <h2>Then code. Then look at the gaps.</h2>
+          <ol class="steps">
+            <li>
+              <span class="n">1</span>
+              <span><code>/radius:expect</code> drafts the file from a requirement or a conversation.</span>
+            </li>
+            <li>
+              <span class="n">2</span>
+              <span>You read it. Split or drop files. That is the gate.</span>
+            </li>
+            <li>
+              <span class="n">3</span>
+              <span><code>/radius:impl</code> implements against the listed files and stays close to the estimates.</span>
+            </li>
+            <li>
+              <span class="n">4</span>
+              <span><code>/radius:drift</code> measures what missed: extra files, blown size, a listed symbol that did not move. Not a general code review.</span>
+            </li>
+          </ol>
+          <p class="note">
+            Two expects that share a file should run sequentially. The expect is
+            also something a script can read, so a reviewer can start at the
+            drift instead of reconstructing intent.
+          </p>
+        </section>
+
+        <section>
+          <h2>Three skills</h2>
+          <ul class="skills">
+            <li>
+              <code class="cmd">/radius:expect</code>
+              <span>Write <code>expect.yml</code> before any code.</span>
+            </li>
+            <li>
+              <code class="cmd">/radius:impl</code>
+              <span>Implement to match that expect.</span>
+            </li>
+            <li>
+              <code class="cmd">/radius:drift</code>
+              <span>Score how far the branch drifted from it.</span>
+            </li>
+          </ul>
+        </section>
+
+        <section id="install">
+          <h2>Install</h2>
+          <p>
+            The plugin name is <code>radius</code>, so Cursor namespaces the
+            skills as <code>/radius:…</code>. From this repository:
+          </p>
+          <pre><code>npm run install-local</code></pre>
+          <p class="note">
+            Reload the Cursor window. Then run <code>/radius:expect</code>.
+            For other agents, once the repo is on GitHub:
+            <code>npx skills add &lt;owner&gt;/&lt;repo&gt;</code>.
+          </p>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        Radius Principle, v1. A habit, not a platform. Write the expectation first.
+      </footer>
+    </div>
+  </body>
+</html>

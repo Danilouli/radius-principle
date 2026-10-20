@@ -1,0 +1,16 @@
+{
+  "name": "radius",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Radius Principle: write expect.yml, implement against it, then measure drift.",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test skills/drift/scripts/check-expect.test.mjs",
+    "check-expect": "node skills/drift/scripts/check-expect.mjs",
+    "site": "python3 -m http.server 4174 --directory site",
+    "install-local": "node scripts/install-local.mjs",
+    "publish": "node scripts/publish.mjs",
+    "publish:push": "node scripts/publish.mjs --push"
+  }
+}

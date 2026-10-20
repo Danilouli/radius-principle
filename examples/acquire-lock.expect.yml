@@ -1,0 +1,15 @@
+desc: "Extract acquireLock so setup and teardown share one release callback."
+files:
+  src/lock.ts:
+    desc: "New helper: acquire and release the path lock."
+    "-": 0
+    "+": 40
+    symbols:
+      acquireLock: create
+      releaseLock: create
+  src/run.ts:
+    desc: "Call acquireLock. Drop the inlined lock block."
+    "-": 12
+    "+": 8
+    symbols:
+      run: update

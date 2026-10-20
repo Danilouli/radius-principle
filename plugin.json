@@ -1,0 +1,17 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "radius",
+  "version": "0.1.0",
+  "description": "Radius Principle: write a non-prose expect.yml before the change, implement against it, then measure drift.",
+  "author": {
+    "name": "Daniel Saadia"
+  },
+  "license": "MIT",
+  "keywords": [
+    "expect",
+    "review",
+    "agent",
+    "scope",
+    "drift"
+  ]
+}

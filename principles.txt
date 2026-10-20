@@ -1,0 +1,75 @@
+- 1 commit = 1 folder for the change (let's call it the spec folder)
+- a spec folder is just a folder into a specified folder (or a list of possible folders), with a desc.yml in it
+- the desc.yml can have a completed: boolean field, completed: true is mandatory to mark as completed, by default it is false
+- hence, a commit MUST have a spec folder with a desc.yml, marked completed: true possibly
+- each spec folder can have child specs
+-> it makes a structure like this : 
+specs/
+  specA/
+    desc.yml
+    specs/
+      specA1/
+      ...
+- if a spec has children, its completed is ignored and equals (child1.completed && child2.completed && ...)
+- a spec folder can resemble this in Radius Principle, for example with lumpcode :
+.lumpcode
+  /lumps
+    /backlog
+      /specs
+        /add-login/
+          desc.yml
+          requirements.md
+          expect.yml
+          learnings.yml
+          assets/
+            design.png
+
+- the spec folder is expected to leave a trace of what is learned after it has been completed
+when the spec is completed, it stays in the repo until a cron agent comes to take all the learnings and new things and integrate them in the repo memory.
+- the cron agent is user choice 
+
+- the repo memory is a folder organized following the user choice, but Radius Principle can give recommendations, like
+.memory/
+  code-conventions/
+    conventionsFamily1.md
+    conventionsFamily2.md
+  ontology/
+    ontology.md
+    entity1.md
+  misc/
+    misc1.md
+
+- the term repo memory should include skills/rules and every other thing
+
+- what is not injectable by the user are :
+-- the fact that a spec is a folder containing a desc.yml with a completed boolean and with sub sub folders recursively
+-- the fact that 1 commit = 1 spec status changed/created
+-- the fact that a spec can only be deleted by the memory agent loop
+-- a .dyod-config.json at root with {specFolderPaths: [specs, .lumpcode/lumps/backlog/items]}
+
+- the user can 'inject' some parts of his choice, more precisely, what can be injected is : 
+-- the spec folder format apart from desc.yml
+-- the memory agent loop
+-- the memory format
+
+An example of my Dyod Methodology without lumpcode : 
+
+The memory includes: 
+
+AGENTS.md
+.agents/memory/
+  code-conventions/
+    general.md
+    types.md
+    ...
+  ontology/
+    entity-list.md
+    user-entity.md
+    book-entity.md
+  misc/
+    packages-list.md
+.agents/skills
+
+Then specs, and the agent memory updater 
+
+Dyod can give some skills to create skills tuned up to the user repo (e.g the skill about memory update)
