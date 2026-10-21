@@ -3,7 +3,7 @@
  * Publish Radius skills for skills.sh.
  *
  * skills.sh has no upload API. The GitHub repo is the package:
- *   npx skills add Danilouli/radius-principle
+ *   npx skills add danilouli/radius-principle
  *
  * This script validates the plugin, then lists the skills from origin
  * so the CLI telemetry path that skills.sh indexes has a chance to fire.
@@ -48,7 +48,7 @@ export function githubSlug(origin) {
   if (!match) {
     return undefined;
   }
-  return `${match[1]}/${match[2].replace(/\.git$/, "")}`;
+  return `${match[1].toLowerCase()}/${match[2].replace(/\.git$/, "").toLowerCase()}`;
 }
 
 /**

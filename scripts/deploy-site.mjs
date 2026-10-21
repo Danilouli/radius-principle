@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Deploy the manifesto site to Cloudflare Workers static assets.
+ * Deploy the manifesto site to Cloudflare Pages.
  *
  * Locally, loads site/.env if CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID
  * are not already in the environment. Never prints those values.
@@ -90,14 +90,15 @@ export function deploySite(options = {}) {
   loadSiteCredentials(env, { envPath: join(cwd, "site", ".env") });
   stageSite(join(cwd, "site"), join(cwd, "site", "dist"));
 
+  if (options.dryRun) {
+    return { dryRun: true };
+  }
+
   const wrangler = join(cwd, "node_modules", ".bin", "wrangler");
   const bin = existsSync(wrangler) ? wrangler : "npx";
   const args = existsSync(wrangler)
-    ? ["deploy"]
-    : ["--yes", "wrangler", "deploy"];
-  if (options.dryRun) {
-    args.push("--dry-run");
-  }
+    ? ["pages", "deploy", "site/dist", "--project-name=radius-principle"]
+    : ["--yes", "wrangler", "pages", "deploy", "site/dist", "--project-name=radius-principle"];
 
   const result = spawn(bin, args, {
     cwd,
@@ -112,7 +113,7 @@ export function deploySite(options = {}) {
 }
 
 function printHelp() {
-  console.log(`Deploy the manifesto site to Cloudflare Workers.
+  console.log(`Deploy the manifesto site to Cloudflare Pages.
 
 Usage
   node scripts/deploy-site.mjs

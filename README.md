@@ -74,7 +74,7 @@ This repository *is* the package. There is no separate skills registry upload. M
 ```bash
 npm test
 npm run deploy:skills    # validate, then list skills from GitHub for skills.sh
-npm run deploy:site      # Cloudflare Workers static assets (site/)
+npm run deploy:site      # Cloudflare Pages (site/)
 npm run publish          # validate + install the Cursor plugin locally
 npm run publish:push     # same, then git push origin
 ```
@@ -84,7 +84,7 @@ npm run publish:push     # same, then git push origin
 After the default branch is on GitHub:
 
 ```bash
-npx skills add Danilouli/radius-principle
+npx skills add danilouli/radius-principle
 ```
 
 That installs the three skills for agents that use the skills CLI (Cursor, Claude Code, Codex, and others). In Cursor, the plugin install above is what gives you the `/radius:` prefix.

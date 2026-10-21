@@ -10,10 +10,10 @@ test("parseArgs accepts --no-list", () => {
 test("githubSlug reads https and ssh remotes", () => {
   assert.equal(
     githubSlug("https://github.com/Danilouli/radius-principle.git"),
-    "Danilouli/radius-principle",
+    "danilouli/radius-principle",
   );
   assert.equal(
     githubSlug("git@github.com:Danilouli/radius-principle.git"),
-    "Danilouli/radius-principle",
+    "danilouli/radius-principle",
   );
 });

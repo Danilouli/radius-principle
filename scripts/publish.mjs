@@ -193,7 +193,7 @@ export function skillsInstallCommand(origin) {
   if (!match) {
     return `npx skills add ${origin}`;
   }
-  return `npx skills add ${match[1]}/${match[2].replace(/\.git$/, "")}`;
+  return `npx skills add ${match[1].toLowerCase()}/${match[2].replace(/\.git$/, "").toLowerCase()}`;
 }
 
 function printHelp() {

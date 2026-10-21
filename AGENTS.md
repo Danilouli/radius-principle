@@ -38,7 +38,7 @@ Split if the file list does not fit in one head (~8 production files, two intent
 2. **Small manifesto website** — ship with the skills, not after. One page: problem, non-prose prior, `expect.yml`, three commands, install.
 3. **Tools later** — overlap detection, CI. The checker in `skills/drift/scripts/check-expect.mjs` scores files, sizes, and listed symbols (CSS variables and classes included). `skills/expect/scripts/validate-expect.mjs` checks that existing paths and `update` symbols are real. Do not invest in more machinery until the format stops moving.
 
-No separate skills registry. GitHub is the package: `npm run deploy:skills` validates and lists from origin so skills.sh can index `npx skills add Danilouli/radius-principle`. `npm run deploy:site` publishes `site/` to Cloudflare Workers (credentials in the environment or `site/.env`, never commit the token). `.github/workflows/deploy.yml` runs both on merge to `main`. `npm run publish` still copies to `~/.cursor/plugins/local/radius` (Cursor will not follow a symlink out of that folder).
+No separate skills registry. GitHub is the package: `npm run deploy:skills` validates and lists from origin so skills.sh can index `npx skills add danilouli/radius-principle`. `npm run deploy:site` publishes `site/` to Cloudflare Pages (credentials in the environment or `site/.env`, never commit the token). `.github/workflows/deploy.yml` runs both on merge to `main`. `npm run publish` still copies to `~/.cursor/plugins/local/radius` (Cursor will not follow a symlink out of that folder).
 
 ## Repo habits
 
