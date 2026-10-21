@@ -1,2 +1,0 @@
-- it seems css variables/classes are not well parsed by the drift script
-- we need a script in the expect skill to check the expect.yml is valid i.e the file paths exist if it is not a new file, and symbols exists if they are considered as 'update'

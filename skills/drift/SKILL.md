@@ -63,7 +63,7 @@ node scripts/check-expect.mjs --expect <path-to-expect.yml>
 
 Add `--base <ref>` when the default base is wrong. Use `--json` when you want the structured report.
 
-The script scores **files and sizes**. You still judge **intent** and **symbols** by reading diffs.
+The script scores **files, sizes, and listed symbols** (including CSS custom properties and class selectors). You still judge **intent** by reading diffs.
 
 Use the PR base when a PR exists; otherwise `origin/main`, then `main`. If the worktree is dirty, say so; the review is the committed range unless the user asks to include uncommitted changes.
 
@@ -76,8 +76,8 @@ Read the actual diffs for listed files and for extras that look material. For ea
 
 | Action | Match when |
 | --- | --- |
-| **create** | Symbol is added (new export/function/type, or new file that defines it) |
-| **update** | A hunk touches that symbol (signature, body, or call-site role in this file) |
+| **create** | Symbol is added (new export/function/type, CSS variable/class, or new file that defines it) |
+| **update** | A hunk touches that symbol (signature, body, call-site role, or CSS token in this file) |
 | **delete** | Symbol is removed from this file (or the file is deleted) |
 
 `expect.yml` (and legacy `blast.yml`) in the diff is normal. Ignore it as an "extra" unless the expect listed it.

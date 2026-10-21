@@ -122,6 +122,10 @@ export function validatePlugin(repoRoot = REPO_ROOT) {
   if (!existsSync(checker)) {
     throw new Error("Missing drift checker script");
   }
+  const validator = join(SKILLS_DIR, "expect", "scripts", "validate-expect.mjs");
+  if (!existsSync(validator)) {
+    throw new Error("Missing expect validator script");
+  }
 
   return { plugin, skills: skillDirs };
 }

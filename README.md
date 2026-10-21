@@ -69,18 +69,22 @@ The manifesto is a static page in `site/` at http://127.0.0.1:4173.
 
 ## Publish
 
-This repository *is* the package. There is no separate registry upload.
+This repository *is* the package. There is no separate skills registry upload. Merging to `main` runs `.github/workflows/deploy.yml`.
 
 ```bash
 npm test
-npm run publish          # validate + install locally
+npm run deploy:skills    # validate, then list skills from GitHub for skills.sh
+npm run deploy:site      # Cloudflare Workers static assets (site/)
+npm run publish          # validate + install the Cursor plugin locally
 npm run publish:push     # same, then git push origin
 ```
 
-`npm run publish` with no `origin` remote prints the `gh repo create` command. After the repo is public:
+`npm run deploy:site` reads `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` from the environment, or from `site/.env` (see `site/.env.example`). GitHub Actions uses repository secrets of the same names.
+
+After the default branch is on GitHub:
 
 ```bash
-npx skills add <owner>/<repo>
+npx skills add Danilouli/radius-principle
 ```
 
 That installs the three skills for agents that use the skills CLI (Cursor, Claude Code, Codex, and others). In Cursor, the plugin install above is what gives you the `/radius:` prefix.
@@ -92,17 +96,24 @@ npm run check-expect -- --expect path/to/expect.yml
 npm run check-expect -- --expect path/to/expect.yml --base origin/main --json
 ```
 
-The checker scores files and `-/+` sizes. `/radius:drift` still reads diffs for intent and listed symbols.
+The checker scores files, `-/+` sizes, and listed symbols (including CSS variables and classes). `/radius:drift` still reads diffs for intent.
+
+```bash
+npm run validate-expect -- --expect path/to/expect.yml
+```
+
+That check fails when a listed existing path is missing, or an `update` symbol is not in the file.
 
 ## Layout
 
 ```
 plugin.json                 Agent Plugins manifest (name: radius)
 .cursor-plugin/plugin.json  Cursor plugin manifest
-skills/expect/              /radius:expect
+skills/expect/              /radius:expect + scripts/validate-expect.mjs
 skills/impl/                /radius:impl
 skills/drift/               /radius:drift + scripts/check-expect.mjs
 examples/                   canonical expect.yml
 site/                       manifesto website
-scripts/                    install-local + publish
+scripts/                    install-local, publish, deploy
+.github/workflows/          deploy on merge to main
 ```

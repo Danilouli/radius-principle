@@ -170,12 +170,14 @@ function readFolded(lines, index, parentIndent) {
   return { value: chunks.join(" ").trim(), next: i };
 }
 
+const SYMBOL_ACTIONS = new Set(["create", "update", "delete"]);
+
 /**
  * @param {string} raw
  * @returns {{ key: string, rest: string | null } | null}
  */
 export function splitKeyValue(raw) {
-  const quoted = raw.match(/^["'](.+?)["']\s*:(?:\s*(.*))?$/);
+  const quoted = raw.match(/^["'](.+)["']\s*:(?:\s*(.*))?$/);
   if (quoted) {
     const rest = quoted[2] === undefined || quoted[2] === "" ? null : quoted[2];
     return { key: quoted[1], rest };
@@ -190,6 +192,12 @@ export function splitKeyValue(raw) {
     return null;
   }
   const rest = after.trim() === "" ? null : after.trim();
+  if (rest && !SYMBOL_ACTIONS.has(rest) && rest.includes(":")) {
+    const actionSplit = raw.match(/^(.*?):\s*(create|update|delete)\s*$/);
+    if (actionSplit) {
+      return { key: actionSplit[1].trim(), rest: actionSplit[2] };
+    }
+  }
   return { key, rest };
 }
 
@@ -340,6 +348,66 @@ export function isExpectPath(path) {
 }
 
 /**
+ * @param {string} value
+ */
+export function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/**
+ * True when `name` appears as a token in `text`.
+ * CSS custom properties (`--bg`) and selectors (`.hero`, `:root`) do not
+ * sit on `\b` word boundaries, so those use a looser token edge.
+ * @param {string} text
+ * @param {string} name
+ */
+export function symbolPresent(text, name) {
+  if (!text || !name) {
+    return false;
+  }
+  const escaped = escapeRegExp(name);
+  if (/^[-.:#@]/.test(name) || name.includes(":")) {
+    return new RegExp(`(?<![A-Za-z0-9_-])${escaped}(?![A-Za-z0-9_-])`).test(text);
+  }
+  return new RegExp(`(?<![A-Za-z0-9_$])${escaped}(?![A-Za-z0-9_$])`).test(text);
+}
+
+/**
+ * @param {string} action
+ * @param {string} name
+ * @param {string} baseText
+ * @param {string} headText
+ * @param {string} patch
+ */
+export function scoreSymbol(action, name, baseText, headText, patch) {
+  const inBase = symbolPresent(baseText, name);
+  const inHead = symbolPresent(headText, name);
+  if (action === "create") {
+    return inHead && !inBase;
+  }
+  if (action === "delete") {
+    return inBase && !inHead;
+  }
+  return inHead && symbolPresent(patch, name);
+}
+
+/**
+ * A listed path is a new file when nothing in the expect requires it to
+ * already exist: no update/delete symbols, and no expected deletions.
+ * @param {ExpectFile} entry
+ */
+export function isNewFileExpect(entry) {
+  const actions = Object.values(entry.symbols ?? {});
+  if (actions.some((action) => action === "update" || action === "delete")) {
+    return false;
+  }
+  if (entry.minus !== undefined && entry.minus > 0) {
+    return false;
+  }
+  return true;
+}
+
+/**
  * @param {number | undefined} expected
  * @param {number} actual
  */
@@ -376,18 +444,39 @@ export function scoreFile(expected, actual) {
 }
 
 /**
+ * @param {ExpectFile} expected
+ * @param {{ base: string, head: string, patch: string } | undefined} body
+ */
+export function scoreExpectedSymbols(expected, body) {
+  if (!expected.symbols) {
+    return [];
+  }
+  return Object.entries(expected.symbols).map(([name, action]) => ({
+    name,
+    action,
+    matched: body ? scoreSymbol(action, name, body.base, body.head, body.patch) : false,
+  }));
+}
+
+/**
  * @param {Expect} expectFile
  * @param {NumstatRow[]} actual
+ * @param {Map<string, { base: string, head: string, patch: string }>} [symbolTexts]
  */
-export function compareExpect(expectFile, actual) {
+export function compareExpect(expectFile, actual, symbolTexts) {
   const actualByPath = new Map(actual.map((row) => [row.path, row]));
   const listed = Object.entries(expectFile.files).map(([path, expected]) => {
     const row = actualByPath.get(path);
+    const symbols =
+      expectFile.legacy || !expected.symbols || !symbolTexts
+        ? undefined
+        : scoreExpectedSymbols(expected, symbolTexts.get(path));
     return {
       path,
       expected,
       actual: row ? { plus: row.plus, minus: row.minus } : null,
       status: scoreFile(expected, row),
+      symbols,
     };
   });
 
@@ -401,10 +490,12 @@ export function compareExpect(expectFile, actual) {
     }));
 
   const statuses = [...listed.map((row) => row.status), ...extra.map((row) => row.status)];
+  const symbolMiss = listed.some((row) => row.symbols?.some((symbol) => !symbol.matched));
   let verdict = "matches";
   if (
     statuses.includes("missing") ||
     statuses.includes("over/under") ||
+    symbolMiss ||
     extra.some((row) => (row.actual?.plus ?? 0) + (row.actual?.minus ?? 0) >= 20)
   ) {
     verdict = "drifted";
@@ -453,6 +544,15 @@ export function formatReport(report) {
     lines.push(
       `${pad(row.path, 29)} ${pad(expectSize, 12)} ${pad(actualSize, 13)} ${row.status}`,
     );
+  }
+  const symbolRows = report.listed.flatMap((row) =>
+    (row.symbols ?? []).map(
+      (symbol) =>
+        `  ${row.path}  ${symbol.name} ${symbol.action} · ${symbol.matched ? "match" : "miss"}`,
+    ),
+  );
+  if (symbolRows.length > 0) {
+    lines.push("", "Symbols", ...symbolRows);
   }
   lines.push("", `Verdict: ${report.verdict}`);
   return lines.join("\n");
@@ -518,7 +618,10 @@ export function checkExpect(options) {
     cwd,
     capture: true,
   }).stdout;
-  const comparison = compareExpect(expectFile, parseNumstat(numstat));
+  const symbolTexts = expectFile.legacy
+    ? undefined
+    : loadSymbolTexts(cwd, base, Object.keys(expectFile.files).filter((path) => expectFile.files[path].symbols));
+  const comparison = compareExpect(expectFile, parseNumstat(numstat), symbolTexts);
   return {
     expectPath,
     desc: expectFile.desc,
@@ -526,6 +629,31 @@ export function checkExpect(options) {
     base,
     ...comparison,
   };
+}
+
+/**
+ * @param {string} cwd
+ * @param {string} base
+ * @param {string[]} paths
+ */
+function loadSymbolTexts(cwd, base, paths) {
+  /** @type {Map<string, { base: string, head: string, patch: string }>} */
+  const texts = new Map();
+  for (const path of paths) {
+    const baseShow = git(["show", `${base}:${path}`], { cwd, capture: true, allowFail: true });
+    const headShow = git(["show", `HEAD:${path}`], { cwd, capture: true, allowFail: true });
+    const patch = git(["diff", `${base}...HEAD`, "--", path], {
+      cwd,
+      capture: true,
+      allowFail: true,
+    });
+    texts.set(path, {
+      base: baseShow.status === 0 ? baseShow.stdout : "",
+      head: headShow.status === 0 ? headShow.stdout : "",
+      patch: patch.status === 0 ? patch.stdout : "",
+    });
+  }
+  return texts;
 }
 
 function isExecutedAsMain() {

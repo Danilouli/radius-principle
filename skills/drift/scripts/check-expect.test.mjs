@@ -7,11 +7,14 @@ import { test } from "node:test";
 import {
   compareExpect,
   isExpectPath,
+  isNewFileExpect,
   normalizeNumstatPath,
   parseExpect,
   parseNumstat,
   scoreFile,
+  scoreSymbol,
   splitKeyValue,
+  symbolPresent,
 } from "./check-expect.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -63,6 +66,113 @@ files:
 test("splitKeyValue handles quoted +/- keys", () => {
   assert.deepEqual(splitKeyValue('"-": 12'), { key: "-", rest: "12" });
   assert.deepEqual(splitKeyValue('"+": 8'), { key: "+", rest: "8" });
+});
+
+test("parses CSS custom properties and class selectors as symbols", () => {
+  const expectFile = parseExpect(`
+desc: "Tweak manifesto tokens."
+files:
+  site/styles.css:
+    desc: "Retint --bg and .hero."
+    "-": 2
+    "+": 4
+    symbols:
+      --bg: update
+      .hero: update
+      ".skip:focus": update
+`);
+  assert.equal(expectFile.files["site/styles.css"].symbols["--bg"], "update");
+  assert.equal(expectFile.files["site/styles.css"].symbols[".hero"], "update");
+  assert.equal(expectFile.files["site/styles.css"].symbols[".skip:focus"], "update");
+});
+
+test("splitKeyValue keeps colons inside unquoted CSS selectors", () => {
+  assert.deepEqual(splitKeyValue(".skip:focus: update"), {
+    key: ".skip:focus",
+    rest: "update",
+  });
+});
+
+test("symbolPresent finds CSS variables and classes", () => {
+  const css = `:root { --bg: #fff; --ink: #111; }\n.hero { color: var(--ink); }\n.skip:focus { top: 0; }\n`;
+  assert.equal(symbolPresent(css, "--bg"), true);
+  assert.equal(symbolPresent(css, "--missing"), false);
+  assert.equal(symbolPresent(css, ".hero"), true);
+  assert.equal(symbolPresent(css, ".skip:focus"), true);
+  assert.equal(symbolPresent(css, "hero"), true);
+  assert.equal(symbolPresent("export function run() {}", "run"), true);
+  assert.equal(symbolPresent("export function runner() {}", "run"), false);
+});
+
+test("scoreSymbol matches create / update / delete including CSS tokens", () => {
+  assert.equal(
+    scoreSymbol("create", "--dot-current", ":root { --bg: #fff; }\n", ":root { --bg: #fff; --dot-current: orange; }\n", "+  --dot-current: orange;"),
+    true,
+  );
+  assert.equal(
+    scoreSymbol("update", "--bg", ":root { --bg: #fff; }\n", ":root { --bg: #000; }\n", "-  --bg: #fff;\n+  --bg: #000;"),
+    true,
+  );
+  assert.equal(
+    scoreSymbol("update", "--bg", ":root { --bg: #fff; }\n", ":root { --bg: #fff; }\n", ""),
+    false,
+  );
+  assert.equal(
+    scoreSymbol("delete", ".hero", ".hero { color: red; }\n", "body { color: red; }\n", "-.hero { color: red; }"),
+    true,
+  );
+});
+
+test("compareExpect flags a missed CSS symbol as drifted", () => {
+  const expectFile = parseExpect(`
+desc: "Retint."
+files:
+  site/styles.css:
+    desc: "Change --bg."
+    "-": 1
+    "+": 1
+    symbols:
+      --bg: update
+`);
+  const missed = compareExpect(
+    expectFile,
+    [{ path: "site/styles.css", plus: 1, minus: 1 }],
+    new Map([
+      [
+        "site/styles.css",
+        {
+          base: ":root { --bg: #fff; }\n",
+          head: ":root { --bg: #fff; --ink: #111; }\n",
+          patch: "+  --ink: #111;",
+        },
+      ],
+    ]),
+  );
+  assert.equal(missed.verdict, "drifted");
+  assert.equal(missed.listed[0].symbols[0].matched, false);
+
+  const hit = compareExpect(
+    expectFile,
+    [{ path: "site/styles.css", plus: 1, minus: 1 }],
+    new Map([
+      [
+        "site/styles.css",
+        {
+          base: ":root { --bg: #fff; }\n",
+          head: ":root { --bg: #000; }\n",
+          patch: "-  --bg: #fff;\n+  --bg: #000;",
+        },
+      ],
+    ]),
+  );
+  assert.equal(hit.verdict, "matches");
+  assert.equal(hit.listed[0].symbols[0].matched, true);
+});
+
+test("isNewFileExpect is false when update or deletions are listed", () => {
+  assert.equal(isNewFileExpect({ minus: 0, symbols: { acquireLock: "create" } }), true);
+  assert.equal(isNewFileExpect({ minus: 0, symbols: { run: "update" } }), false);
+  assert.equal(isNewFileExpect({ minus: 12, symbols: { run: "create" } }), false);
 });
 
 test("numstat rename uses the new path", () => {

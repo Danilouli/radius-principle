@@ -98,6 +98,7 @@ Present the split, then write one expect per approved slice.
 - `create` — new name in this file (or this file is new and defines it).
 - `update` — existing name in this file whose role or body is the edit.
 - `delete` — name removed from this file.
+- CSS names work: `--bg`, `.hero`. Quote selectors that contain `:` (`".skip:focus"`).
 - Prefer source-of-truth names, not the barrel line, unless the expect is the barrel.
 
 **Sizes**
@@ -110,5 +111,13 @@ Present the split, then write one expect per approved slice.
 Show the full YAML in chat. Call out any guess (a path you have not opened, a size that is a stab). Ask whether to split or drop files.
 
 Write `expect.yml` when the user approves, or immediately when they asked to write the file and the path is unambiguous. Do not implement the change in the same turn.
+
+Then check the file is grounded in the tree (from this skill directory, or the installed plugin):
+
+```bash
+node scripts/validate-expect.mjs --expect <path-to-expect.yml>
+```
+
+It fails when a listed path should already exist and does not, or when an `update` symbol is not in that file. New files (`"-": 0` and only `create` symbols) may be missing. Quote selectors that contain `:` (`.skip:focus`). Fix any issues before handing the expect to `/radius:impl`.
 
 After writing, say this is the review they can still change. Implementation is `/radius:impl`: prefer the listed files and stay close to the line estimates.
