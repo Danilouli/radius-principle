@@ -8,7 +8,7 @@ Formalizing first gives you:
 
 - **Human comprehension** — see every file before any code exists. If the list seems too big, you can split it.
 - **A gate** — read the expect, split or drop files, and validate it. That is the first and most important gate. If the first time you see it is inside the implementation PR, you are late.
-- **Easier review** — if the contract is missed, `/radius:drift` shows where to look: extra files, blown size, a listed symbol that did not move. Not a general code review.
+- **Easier review** — if the contract is missed, `/radius:drift` tells you where to turn your attention: extra files, blown size, a listed symbol that did not move.
 - **Agent guidance** — `/radius:impl` implements against the contract you validated, and tries to stay close to the estimates.
 - **Conflict anticipation** — two expects that share a file, or that update the same symbol, should run one after the other.
 
@@ -20,7 +20,7 @@ The file list has to fit in your head. If it does not, the PR will not either. S
 | --- | --- |
 | `/radius:expect` | Draft an `expect.yml` from a requirement or conversation. |
 | `/radius:impl` | Implement the change to match that expect. |
-| `/radius:drift` | Measure how far a branch or PR drifted from the expect. Not a general code review. |
+| `/radius:drift` | Measure how far a branch or PR drifted from the expect. It tells you where to turn your attention. |
 
 ## expect.yml (v1)
 
