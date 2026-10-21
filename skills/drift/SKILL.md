@@ -3,7 +3,8 @@ name: drift
 description: >-
   Measures how far a branch or PR drifted from an expect.yml: files, sizes, and
   listed symbols. Explains the gaps. Use when the user asks to check drift,
-  compare against expect.yml, or run /radius:drift. Not a general code review.
+  compare against expect.yml, or run /radius:drift. Helps the reviewer focus
+  on the changes that look most unexpected.
 disable-model-invocation: true
 ---
 

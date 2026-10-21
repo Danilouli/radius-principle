@@ -48,24 +48,31 @@
             I like TypeScript (a lot) and clean agentic workflows.
           </p>
           <p>
-            About 20 expect-bounded PRs are reviewed by the team then merged each week on an enterprise monorepo, where I work as a freelancer.<br />
+            About 20 expect-bounded PRs are reviewed by my team then merged each week on an enterprise monorepo, where I work as a freelancer.<br />
             I also build <a href="https://lumpcode.com">Lumpcode</a>, a CLI to manage agent loops directly on your codebase.<br />
             Those PRs are written with it.
           </p>
         </section>
 
         <section>
-          <h2>The review you can still change</h2>
+          <h2>Anticipate your reviews</h2>
           <p>
-            An agent PR already on the branch asks you to reconstruct intent from
-            a finished diff. A big agent PR is what you get when nobody reviewed
-            a small slice. So you review the change before any code exists.
+            An agent PR asks you to reconstruct intent from a finished diff.<br />
+            If that PR is the first thing you read, the review is already late.
           </p>
           <p>
-            A paragraph can be true and still leave the slice unbounded. A file
-            map cannot hide that. You see the whole slice. If it is already too
-            big, you split it. Then the agent implements against a contract you
-            already accepted.
+            A markdown spec, a requirement, or a ticket is hard to read at a
+            glance. What will happen stays hard to see. Verifying that an implementation matches
+            that prose is hard.
+          </p>
+          <p>
+            An <code>expect.yml</code> names the files and symbols that should
+            change. You can review that list at a glance.
+            <br />
+            If the list seems too big, you can split it. Pair the expect with the ticket's <code>.md</code> description,
+            then let the agent try to implement against the contract you validated.
+            If that contract is missed, <code>/radius:drift</code> shows where
+            to look more closely.
           </p>
         </section>
 
@@ -103,7 +110,7 @@ files:
           <h2>If the expect is already big, split it</h2>
           <p>
             The file list has to fit in your head. If it does not, the PR will
-            not either. Split until each expect is one reviewable slice. Those
+            not either. Split until each expect is one change you can review. Those
             PRs stay small, precise, easy to review, and easy to combine.
           </p>
           <p>
@@ -113,7 +120,7 @@ files:
         </section>
 
         <section id="loop">
-          <h2>Then code. Then look at the gaps.</h2>
+          <h2>Then let the agent implement. Then look at the gaps.</h2>
           <ol class="steps">
             <li>
               <span class="n">1</span>
@@ -121,11 +128,11 @@ files:
             </li>
             <li>
               <span class="n">2</span>
-              <span>You read it. Split or drop files. That is the gate.</span>
+              <span>You read it. Split or drop files. Validate the expectation. That is the first and most important gate.</span>
             </li>
             <li>
               <span class="n">3</span>
-              <span><code>/radius:impl</code> implements against the listed files and stays close to the estimates.</span>
+              <span><code>/radius:impl</code> implements against the listed files and tries to stay close to the estimates.</span>
             </li>
             <li>
               <span class="n">4</span>
@@ -133,9 +140,12 @@ files:
             </li>
           </ol>
           <p class="note">
-            Two expects that share a file should run sequentially. The expect is
-            also something a script can read, so a reviewer can start at the
-            drift instead of reconstructing intent.
+            Two expects that share a file, or that update the same symbol, should
+            run one after the other, so they do not conflict.
+          </p>
+          <p class="note">
+            The expect is also something a script can read, so a reviewer can
+            start at the drift instead of reconstructing intent.
           </p>
         </section>
 
