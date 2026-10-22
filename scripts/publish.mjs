@@ -18,12 +18,12 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { installLocal } from "./install-local.mjs";
-import { parseExpect } from "../skills/drift/scripts/check-expect.mjs";
+import { parseExpect } from "../skills/radius-drift/scripts/check-expect.mjs";
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = resolve(SCRIPT_DIR, "..");
 const SKILLS_DIR = join(REPO_ROOT, "skills");
-const EXPECTED_SKILLS = ["expect", "impl", "drift"];
+const EXPECTED_SKILLS = ["radius-expect", "radius-impl", "radius-drift"];
 
 /**
  * @param {string[]} argv
@@ -118,11 +118,11 @@ export function validatePlugin(repoRoot = REPO_ROOT) {
     throw new Error("examples/acquire-lock.expect.yml is not a valid canonical expect");
   }
 
-  const checker = join(SKILLS_DIR, "drift", "scripts", "check-expect.mjs");
+  const checker = join(SKILLS_DIR, "radius-drift", "scripts", "check-expect.mjs");
   if (!existsSync(checker)) {
     throw new Error("Missing drift checker script");
   }
-  const validator = join(SKILLS_DIR, "expect", "scripts", "validate-expect.mjs");
+  const validator = join(SKILLS_DIR, "radius-expect", "scripts", "validate-expect.mjs");
   if (!existsSync(validator)) {
     throw new Error("Missing expect validator script");
   }

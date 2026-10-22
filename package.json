@@ -6,9 +6,9 @@
   "description": "Radius Principle: write expect.yml, implement against it, then measure drift.",
   "license": "MIT",
   "scripts": {
-    "test": "node --test skills/drift/scripts/check-expect.test.mjs skills/expect/scripts/validate-expect.test.mjs scripts/*.test.mjs",
-    "check-expect": "node skills/drift/scripts/check-expect.mjs",
-    "validate-expect": "node skills/expect/scripts/validate-expect.mjs",
+    "test": "node --test skills/radius-drift/scripts/check-expect.test.mjs skills/radius-expect/scripts/validate-expect.test.mjs scripts/*.test.mjs",
+    "check-expect": "node skills/radius-drift/scripts/check-expect.mjs",
+    "validate-expect": "node skills/radius-expect/scripts/validate-expect.mjs",
     "site": "python3 -m http.server 4174 --directory site",
     "install-local": "node scripts/install-local.mjs",
     "publish": "node scripts/publish.mjs",

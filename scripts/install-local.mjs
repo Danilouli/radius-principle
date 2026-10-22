@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Copy this plugin into ~/.cursor/plugins/local/radius so Cursor loads
- * /radius:expect, /radius:impl, and /radius:drift.
+ * Copy this plugin into ~/.cursor/plugins/local/radius.
+ * skills.sh installs the commands as /radius-expect, /radius-impl, and /radius-drift.
  *
  * Cursor does not follow symlinks that point outside that folder, so this
  * copies. Re-run after skill edits, then reload the window.
@@ -103,7 +103,7 @@ export function installLocal(options = {}) {
     console.log(`Removed previous plugin at ${legacyDest}`);
   }
   console.log(`Installed ${PLUGIN_NAME} -> ${dest}`);
-  console.log("Reload the Cursor window, then run /radius:expect, /radius:impl, or /radius:drift.");
+  console.log("Reload the Cursor window. skills.sh commands are /radius-expect, /radius-impl, and /radius-drift.");
   return { dest, dryRun: false };
 }
 

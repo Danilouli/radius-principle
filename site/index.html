@@ -71,7 +71,7 @@
             <br />
             If the list seems too big, you can split it. Pair the expect with the ticket's <code>.md</code> description,
             then let the agent try to implement against the contract you validated.
-            If that contract is missed, <code>/radius:drift</code> shows where
+            If that contract is missed, <code>/radius-drift</code> shows where
             to look more closely.
           </p>
         </section>
@@ -124,7 +124,7 @@ files:
           <ol class="steps">
             <li>
               <span class="n">1</span>
-              <span><code>/radius:expect</code> drafts the file from a requirement or a conversation.</span>
+              <span><code>/radius-expect</code> drafts the file from a requirement or a conversation.</span>
             </li>
             <li>
               <span class="n">2</span>
@@ -132,11 +132,11 @@ files:
             </li>
             <li>
               <span class="n">3</span>
-              <span><code>/radius:impl</code> implements against the listed files and tries to stay close to the estimates.</span>
+              <span><code>/radius-impl</code> implements against the listed files and tries to stay close to the estimates.</span>
             </li>
             <li>
               <span class="n">4</span>
-              <span><code>/radius:drift</code> measures what missed: extra files, blown size, a listed symbol that did not move.</span>
+              <span><code>/radius-drift</code> measures what missed: extra files, blown size, a listed symbol that did not move.</span>
               <br/>
               <span>It tells you where to turn your attention.</span>
             </li>
@@ -155,15 +155,15 @@ files:
           <h2>Three skills</h2>
           <ul class="skills">
             <li>
-              <a class="cmd" href="https://github.com/danilouli/radius-principle/blob/main/skills/expect/SKILL.md"><code>/radius:expect</code></a>
+              <a class="cmd" href="https://github.com/danilouli/radius-principle/blob/main/skills/radius-expect/SKILL.md"><code>/radius-expect</code></a>
               <span>Write <code>expect.yml</code> before any code.</span>
             </li>
             <li>
-              <a class="cmd" href="https://github.com/danilouli/radius-principle/blob/main/skills/impl/SKILL.md"><code>/radius:impl</code></a>
+              <a class="cmd" href="https://github.com/danilouli/radius-principle/blob/main/skills/radius-impl/SKILL.md"><code>/radius-impl</code></a>
               <span>Implement to match that expect.</span>
             </li>
             <li>
-              <a class="cmd" href="https://github.com/danilouli/radius-principle/blob/main/skills/drift/SKILL.md"><code>/radius:drift</code></a>
+              <a class="cmd" href="https://github.com/danilouli/radius-principle/blob/main/skills/radius-drift/SKILL.md"><code>/radius-drift</code></a>
               <span>Score how far the branch drifted from it.</span>
             </li>
           </ul>
@@ -177,7 +177,7 @@ files:
           </p>
           <pre><code>npx skills add danilouli/radius-principle</code></pre>
           <p class="note">
-            Then run <code>/radius:expect</code>.
+            Then run <code>/radius-expect</code>.
           </p>
         </section>
       </main>

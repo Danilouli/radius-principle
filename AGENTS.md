@@ -1,6 +1,6 @@
 # Radius Principle — settled decisions
 
-This file is for agents continuing this repo. Public copy lives in `README.md`. Skills are the source of truth for how `/radius:expect`, `/radius:impl`, and `/radius:drift` behave.
+This file is for agents continuing this repo. Public copy lives in `README.md`. Skills are the source of truth for how `/radius-expect`, `/radius-impl`, and `/radius-drift` behave.
 
 ## What Radius Principle is
 
@@ -8,19 +8,19 @@ One principle for reviewable, predictable agentic changes. The load-bearing idea
 
 That prior enables: a human can see and split the slice before code exists; a script can score drift against git; an agent can implement against the file list; two expects that share a file should run sequentially.
 
-The human still reads `expect.yml` before `/radius:impl`. If the first time anyone sees it is inside the impl PR, they are late. Do not merge expect-writing and implementation in one turn.
+The human still reads `expect.yml` before `/radius-impl`. If the first time anyone sees it is inside the impl PR, they are late. Do not merge expect-writing and implementation in one turn.
 
 ## v1 surface
 
-Three skills, plugin name `radius`. The spoken name is Radius Principle. The plugin id stays `radius` so that name remains the brand namespace. Do not add a fourth skill. Do not drop impl. Do not add a mega-skill that does all three.
+Three skills, installed with `npx skills add danilouli/radius-principle`. The spoken name is Radius Principle. Do not add a fourth skill. Do not drop radius-impl. Do not add a mega-skill that does all three.
 
 | Slash command | Directory | Job |
 | --- | --- | --- |
-| `/radius:expect` | `skills/expect/` | Draft `expect.yml` from a requirement or conversation. |
-| `/radius:impl` | `skills/impl/` | Implement to match that expect. |
-| `/radius:drift` | `skills/drift/` | Measure file/size/symbol drift. Not a general code review. |
+| `/radius-expect` | `skills/radius-expect/` | Draft `expect.yml` from a requirement or conversation. |
+| `/radius-impl` | `skills/radius-impl/` | Implement to match that expect. |
+| `/radius-drift` | `skills/radius-drift/` | Measure file/size/symbol drift. Not a general code review. |
 
-Do not name the drift skill `/radius:review` — people will treat it as a PR review.
+Do not name the drift skill `radius-review` — people will treat it as a PR review.
 
 `blast.yml` is the old filename. Still read it. New writes use `expect.yml`.
 
@@ -36,7 +36,7 @@ Split if the file list does not fit in one head (~8 production files, two intent
 
 1. **Skills as v1** — this repo *is* the package. Rename the artifact before publishing; do not ship `blast.yml` as v1.
 2. **Small manifesto website** — ship with the skills, not after. One page: problem, non-prose prior, `expect.yml`, three commands, install.
-3. **Tools later** — overlap detection, CI. The checker in `skills/drift/scripts/check-expect.mjs` scores files, sizes, and listed symbols (CSS variables and classes included). `skills/expect/scripts/validate-expect.mjs` checks that existing paths and `update` symbols are real. Do not invest in more machinery until the format stops moving.
+3. **Tools later** — overlap detection, CI. The checker in `skills/radius-drift/scripts/check-expect.mjs` scores files, sizes, and listed symbols (CSS variables and classes included). `skills/radius-expect/scripts/validate-expect.mjs` checks that existing paths and `update` symbols are real. Do not invest in more machinery until the format stops moving.
 
 No separate skills registry. GitHub is the package: `npm run deploy:skills` validates and lists from origin so skills.sh can index `npx skills add danilouli/radius-principle`. `npm run deploy:site` publishes `site/` to Cloudflare Pages (credentials in the environment or `site/.env`, never commit the token). `.github/workflows/deploy.yml` runs both on merge to `main`. `npm run publish` still copies to `~/.cursor/plugins/local/radius` (Cursor will not follow a symlink out of that folder).
 

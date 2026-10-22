@@ -8,8 +8,8 @@ Formalizing first gives you:
 
 - **Human comprehension** — see every file before any code exists. If the list seems too big, you can split it.
 - **A gate** — read the expect, split or drop files, and validate it. That is the first and most important gate. If the first time you see it is inside the implementation PR, you are late.
-- **Easier review** — if the contract is missed, `/radius:drift` tells you where to turn your attention: extra files, blown size, a listed symbol that did not move.
-- **Agent guidance** — `/radius:impl` implements against the contract you validated, and tries to stay close to the estimates.
+- **Easier review** — if the contract is missed, `/radius-drift` tells you where to turn your attention: extra files, blown size, a listed symbol that did not move.
+- **Agent guidance** — `/radius-impl` implements against the contract you validated, and tries to stay close to the estimates.
 - **Conflict anticipation** — two expects that share a file, or that update the same symbol, should run one after the other.
 
 The file list has to fit in your head. If it does not, the PR will not either. Split until each expect is one change you can review.
@@ -18,9 +18,9 @@ The file list has to fit in your head. If it does not, the PR will not either. S
 
 | Slash command | What it does |
 | --- | --- |
-| `/radius:expect` | Draft an `expect.yml` from a requirement or conversation. |
-| `/radius:impl` | Implement the change to match that expect. |
-| `/radius:drift` | Measure how far a branch or PR drifted from the expect. It tells you where to turn your attention. |
+| `/radius-expect` | Draft an `expect.yml` from a requirement or conversation. |
+| `/radius-impl` | Implement the change to match that expect. |
+| `/radius-drift` | Measure how far a branch or PR drifted from the expect. It tells you where to turn your attention. |
 
 ## expect.yml (v1)
 
@@ -44,7 +44,7 @@ files:
 
 `desc` is for humans. `files` is the expect. `+` / `-` are expected size, not a pass or fail. `symbols` are not exhaustive: `create`, `update`, or `delete` for names you already care about.
 
-After you validate the expect, `/radius:impl` implements against the listed files and tries to stay close to the estimates.
+After you validate the expect, `/radius-impl` implements against the listed files and tries to stay close to the estimates.
 
 A fuller example lives in `examples/acquire-lock.expect.yml`. Legacy files named `blast.yml` still read.
 
@@ -54,4 +54,4 @@ A fuller example lives in `examples/acquire-lock.expect.yml`. Legacy files named
 npx skills add danilouli/radius-principle
 ```
 
-Then run `/radius:expect`.
+Then run `/radius-expect`.
