@@ -22,7 +22,7 @@ export const REPO_ROOT = resolve(SCRIPT_DIR, "..");
 const SITE_ENV_PATH = join(REPO_ROOT, "site", ".env");
 const SITE_ENV_EXAMPLE = "site/.env.example";
 const REQUIRED = ["CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID"];
-export const SITE_PUBLIC_FILES = ["index.html", "styles.css", "logo.svg"];
+export const SITE_PUBLIC_FILES = ["index.html", "styles.css", "logo.svg", "og.png"];
 
 /**
  * @param {string[]} argv

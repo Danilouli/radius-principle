@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<!-- Source for site/og.png. Not deployed. Re-render with Chrome headless at 1200×630, scale 2. -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Radius Principle share card</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        width: 1200px;
+        height: 630px;
+        background: #ffffff;
+        color: #0b0d10;
+        font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+      }
+
+      .card {
+        box-sizing: border-box;
+        width: 1200px;
+        height: 630px;
+        padding: 56px 64px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .brand svg {
+        display: block;
+        color: #0b2a5b;
+      }
+
+      .wordmark {
+        font-weight: 650;
+        letter-spacing: -0.03em;
+        font-size: 28px;
+        line-height: 1;
+      }
+
+      h1 {
+        margin: 22px 0 0;
+        font-size: 40px;
+        line-height: 1.08;
+        letter-spacing: -0.045em;
+        font-weight: 650;
+      }
+
+      pre {
+        margin: 26px 0 0;
+        padding: 22px 26px;
+        background: #f3f5f8;
+        color: #0b0d10;
+        border: 1px solid #d6dbe3;
+        font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+        font-size: 25px;
+        line-height: 1.42;
+        letter-spacing: -0.015em;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="brand">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="36" height="36" aria-hidden="true">
+          <circle cx="32" cy="32" r="22" fill="none" stroke="currentColor" stroke-width="2.5" />
+          <circle cx="32" cy="32" r="2.75" fill="currentColor" />
+          <path d="M32 32h22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+        </svg>
+        <span class="wordmark">Radius Principle</span>
+      </div>
+      <h1>Review the change before it exists.</h1>
+      <pre><code>desc: "Extract acquireLock. One release callback."
+files:
+  src/lock.ts:
+    desc: "Acquire and release the path lock."
+    "-": 0
+    "+": 40
+    symbols:
+      acquireLock: create
+      releaseLock: create</code></pre>
+    </div>
+  </body>
+</html>

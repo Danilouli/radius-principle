@@ -41,9 +41,10 @@ test("stageSite copies public files and leaves .env behind", () => {
   writeFileSync(join(siteDir, "index.html"), "<html></html>");
   writeFileSync(join(siteDir, "styles.css"), "body{}");
   writeFileSync(join(siteDir, "logo.svg"), "<svg></svg>");
+  writeFileSync(join(siteDir, "og.png"), "png");
   writeFileSync(join(siteDir, ".env"), "CLOUDFLARE_API_TOKEN=secret");
   const copied = stageSite(siteDir, destDir);
-  assert.deepEqual(copied.sort(), ["index.html", "logo.svg", "styles.css"]);
+  assert.deepEqual(copied.sort(), ["index.html", "logo.svg", "og.png", "styles.css"]);
   assert.equal(readFileSync(join(destDir, "index.html"), "utf8"), "<html></html>");
   assert.throws(() => readFileSync(join(destDir, ".env")), /ENOENT/);
   rmSync(root, { recursive: true, force: true });
